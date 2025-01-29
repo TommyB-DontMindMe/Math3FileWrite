@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include "Vertex.h"
 using namespace std;
 
 string Ordinal(int Cardinal)
@@ -28,7 +29,7 @@ float SolvePolynom(const vector<float> Coefficients, float Indeterminate)
 	int Degree = Coefficients.size();
 	for (size_t i = 0; i < Degree; i++)
 	{
-		Indeterminate * Solution + Coefficients[Degree - 1 - i];
+		Solution = Indeterminate * Solution + Coefficients[Degree - 1 - i];
 	}
 	return Solution;
 }
@@ -66,7 +67,7 @@ int main()
 		}
 	}
 
-	for (size_t i = 0; i < PolynomialDegree; i++)
+	for (size_t i = 0; i <= PolynomialDegree; i++)
 	{
 		cout << "Please specify " << (i < 1 ? "constant" : Ordinal(i) + " coefficient") << endl;
 
@@ -141,10 +142,37 @@ int main()
 	if (MyFile.is_open())
 	{
 		MyFile << Input << endl;
-		for (size_t i = 0; i < Resolution; i++)
+
+		float CurrentValue = FunctionStart;
+		float Result = SolvePolynom(PolynomCoefficients, CurrentValue);
+		for (size_t i = 1; i <= Resolution; i++)
 		{
-			float CurrentValue = FunctionStart + i * Interval;
-			MyFile << FunctionStart << ", " << SolvePolynom(PolynomCoefficients, FunctionStart) << ", 0.0";
+			Vertex StartVertex;
+			StartVertex.x = CurrentValue;
+			StartVertex.y = Result;
+
+			CurrentValue = FunctionStart + i * Interval;
+			float NewResult = SolvePolynom(PolynomCoefficients, CurrentValue);
+			Vertex EndVertex;
+			EndVertex.x = CurrentValue;
+			EndVertex.y = NewResult;
+
+			if (NewResult < Result)
+			{
+				StartVertex.r = 1;
+				EndVertex.r = 1;
+			}
+			else
+			{
+				StartVertex.g = 1;
+				EndVertex.g = 1;
+			}
+
+
+			MyFile << StartVertex << endl;
+			MyFile << EndVertex << endl;
+
+			Result = NewResult;
 		}
 		MyFile.close();
 	}
