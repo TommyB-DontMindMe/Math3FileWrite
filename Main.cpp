@@ -19,11 +19,11 @@ string Ordinal(int Cardinal)
 	case 3:
 		return "3rd";
 	default:
-		return Cardinal + "th";
+		return std::to_string(Cardinal) + "th";
 	}
 }
 
-float SolvePolynom(const vector<float> Coefficients, float Indeterminate)
+float SolvePolynom(const vector<float>& Coefficients, float Indeterminate)
 {
 	float Solution = 0;
 	int Degree = Coefficients.size();
@@ -31,6 +31,17 @@ float SolvePolynom(const vector<float> Coefficients, float Indeterminate)
 	{
 		Solution = Indeterminate * Solution + Coefficients[Degree - 1 - i];
 	}
+	return Solution;
+}
+float SolveDerivative(const vector<float>& Coefficients, float Indeterminate)
+{
+	float Solution = 0;
+	int Degree = Coefficients.size() - 1;
+	for (size_t i = 0; i < Degree; i++)
+	{
+		Solution = Coefficients[Degree - i] * (Degree - i) + (Solution * Indeterminate);
+	}
+	cout << Solution << ", ";
 	return Solution;
 }
 
@@ -181,6 +192,7 @@ int main()
 		case 1:
 		{
 			float Result = SolvePolynom(PolynomCoefficients, CurrentValue);
+			SolveDerivative(PolynomCoefficients, CurrentValue);
 			for (size_t i = 1; i <= Resolution; i++)
 			{
 				Vertex StartVertex;
@@ -189,6 +201,7 @@ int main()
 
 				CurrentValue = FunctionStart + i * Interval;
 				float NewResult = SolvePolynom(PolynomCoefficients, CurrentValue);
+				SolveDerivative(PolynomCoefficients, CurrentValue);
 				Vertex EndVertex;
 				EndVertex.x = CurrentValue;
 				EndVertex.y = NewResult;
@@ -246,7 +259,5 @@ int main()
 		
 		MyFile.close();
 	}
-	// if (N < N-1) { Color = (1, 0, 0) }
-	// else { Color = (0, 1, 0) }
 
 }
