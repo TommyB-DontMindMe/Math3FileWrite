@@ -236,15 +236,22 @@ int main()
 			VertexA.r = 1.0f;
 			VertexA.b = 1.0f;
 
+			float Progress = 0;
+
 			for (size_t i = 1; i <= Resolution; i++)
 			{
 				Vertex VertexB;
 
 				CurrentValue += Interval;
+				Progress = (CurrentValue - FunctionStart) / (FunctionEnd - FunctionStart);
 
 				VertexB.x = cos(CurrentValue);
 				VertexB.y = sin(CurrentValue);
 				VertexB.z = CurrentValue;
+
+				VertexB.r = 1.0f;
+				VertexB.g = Progress;
+				VertexB.b = 1.0f - Progress;
 
 				MyFile << VertexA << endl;
 				MyFile << VertexB << endl;
